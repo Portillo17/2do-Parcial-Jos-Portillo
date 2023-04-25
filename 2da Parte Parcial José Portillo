@@ -1,0 +1,54 @@
+const int trigPin = 6;
+const int echoPin = 7;
+const int ledPin1 = 2;
+const int ledPin2 = 3;
+const int ledPin3 = 4;
+const int bufferPin = 5;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(ledPin1, OUTPUT);
+  pinMode(ledPin2, OUTPUT);
+  pinMode(ledPin3, OUTPUT);
+  pinMode(bufferPin, OUTPUT);
+}
+
+void loop() {
+  String input = "";
+  while (Serial.available() > 0) {
+    input += char(Serial.read());
+    delay(2);
+  }
+  if (input == "mono") {
+    for (int i = 0; i <1000; i++){
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    float duration = pulseIn(echoPin, HIGH);
+    float distance = duration * 0.034 / 2;
+    Serial.print("Distancia: ");
+    Serial.println(distance);
+    if (distance > 100) {
+      digitalWrite(ledPin1, HIGH);
+      digitalWrite(ledPin2, LOW);
+      digitalWrite(ledPin3, LOW);
+      digitalWrite(bufferPin, LOW);
+    } else if (distance > 30) {
+      digitalWrite(ledPin1, LOW);
+      digitalWrite(ledPin2, HIGH);
+      digitalWrite(ledPin3, LOW);
+      digitalWrite(bufferPin, LOW);
+    } else {
+      digitalWrite(ledPin1, LOW);
+      digitalWrite(ledPin2, LOW);
+      digitalWrite(ledPin3, HIGH);
+      digitalWrite(bufferPin, HIGH);
+    }
+    delay(300);
+  }
+}
+}
